@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Treasure Hunt — Beyond The Horizon</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+:root{--card:#f2e1b4;--card2:#e8cf96;--ink:#3a2410;--mut:#7a5a30;--gold:#f0c05a;--red:#a8281f;--red2:#c9382c;--ok:#2e6b2e;--line:#b48c4c;--sea:#f2e3bd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;color:var(--ink);font-family:'IM Fell English',Georgia,serif;background:linear-gradient(180deg,#050d1a 0%,#0b2236 45%,#0f4056 100%) fixed;overflow-x:hidden}
+.stars{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 80px,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 160px 20px,#fff,transparent),radial-gradient(1px 1px at 60px 140px,#fff,transparent),radial-gradient(1.5px 1.5px at 130px 110px,#ffe9a8,transparent);background-size:200px 170px;animation:twinkle 4s ease-in-out infinite alternate;opacity:.7}
+.moon{position:fixed;top:5%;right:8%;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff8dc,#f0d88a 70%);box-shadow:0 0 50px 14px #f0d88a55;pointer-events:none;animation:float 9s ease-in-out infinite}
+.wave{position:fixed;left:0;width:100%;height:120px;background-repeat:repeat-x;background-size:1200px 120px;pointer-events:none}
+.w1{bottom:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 60 Q150 10 300 60 T600 60 T900 60 T1200 60 V120 H0Z' fill='%23134e68' fill-opacity='.65'/%3E%3C/svg%3E");animation:wave 22s linear infinite}
+.w2{bottom:-22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0 70 Q150 20 300 70 T600 70 T900 70 T1200 70 V120 H0Z' fill='%230a2c42' fill-opacity='.9'/%3E%3C/svg%3E");animation:wave 14s linear infinite reverse}
+.ship{position:fixed;bottom:50px;left:-80px;font-size:2.2rem;pointer-events:none;animation:sail 50s linear infinite,bob 3s ease-in-out infinite;filter:drop-shadow(0 4px 6px #0008)}
+main{position:relative;max-width:980px;margin:0 auto;padding:22px 16px 150px}
+h1{font-family:'Pirata One',Georgia,serif;text-align:center;margin:4px 0 0;font-size:3.2rem;letter-spacing:.05em;font-weight:400;background:linear-gradient(90deg,#c88a2a,#ffe08a,#c88a2a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite;filter:drop-shadow(0 3px 6px #000a)}
+h1 span{display:inline-block;-webkit-text-fill-color:initial;animation:swing 3.5s ease-in-out infinite;transform-origin:50% 0}
+.sub{text-align:center;color:var(--sea);opacity:.85;margin:0 0 20px;font-style:italic}
+.maps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.maps{grid-template-columns:1fr}h1{font-size:2.4rem}}
+.card{background:linear-gradient(160deg,var(--card),var(--card2));border:2px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 8px 24px #0009,inset 0 0 40px #b48c4c33;animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.maps .card:nth-child(2){animation-delay:.15s}
+.map{transition:transform .3s,box-shadow .3s,border-color .3s}
+.map:hover{transform:translateY(-4px) rotate(-.4deg)}
+.map.on{border-color:var(--gold);animation:rise .8s both,glow 2s ease-in-out infinite}
+.map h3{font-family:'Pirata One',Georgia,serif;margin:0 0 8px;font-size:1.3rem;font-weight:400;color:var(--red)}
+.map img{width:100%;aspect-ratio:16/10;object-fit:contain;background:#d9bf86;border-radius:6px;display:block;cursor:zoom-in;transition:transform .4s}
+.map:hover img{transform:scale(1.02)}
+.hint{font-size:.8rem;color:var(--mut);text-align:center;margin-top:6px}
+#timer{font:700 2.8rem ui-monospace,Menlo,monospace;text-align:center;margin:22px 0 10px;color:var(--gold);text-shadow:0 0 14px #f0c05a55}
+#timer.run{animation:pulse 1s ease-in-out infinite}
+button{font-family:'Pirata One',Georgia,serif;font-size:1.15rem;letter-spacing:.05em;color:#fff;background:linear-gradient(180deg,var(--red2),var(--red));border:0;border-radius:8px;padding:11px 24px;cursor:pointer;box-shadow:0 4px 0 #6a1510,0 8px 14px #0006;transition:transform .15s,box-shadow .15s}
+button:hover{transform:translateY(-2px)}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #6a1510}
+#startBtn{animation:pulse 1.8s ease-in-out infinite}
+button.ghost{background:none;color:var(--mut);border:1px solid var(--line);box-shadow:none;font-family:inherit;font-size:.9rem}
+.center{text-align:center}
+#clue{font-size:1.3rem;line-height:1.55;font-style:italic;min-height:3.2em}
+#clue.typing::after{content:'▍';color:var(--red);animation:blink .7s steps(1) infinite}
+.lbl{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.note{margin-top:12px;padding:10px 12px;border-left:4px solid var(--red);background:#0000000d;border-radius:4px;font-size:.95rem;color:var(--mut)}
+.row{display:flex;gap:8px;margin-top:14px}
+input{flex:1;min-width:0;font:inherit;padding:11px;border:2px solid var(--line);border-radius:8px;background:#fff8e4;color:var(--ink);transition:box-shadow .2s,border-color .2s}
+input:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 4px #a8281f33}
+#msg{min-height:1.2em;margin-top:8px;font-size:.95rem;color:var(--red)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px dashed var(--line);text-align:left}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+tbody tr{animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.tick{color:var(--ok);font-weight:700;font-size:1.3rem}
+#done{animation:pop .8s both}
+.hide{display:none}
+.coin{position:fixed;top:-30px;font-size:1.6rem;pointer-events:none;z-index:20}
+#lb{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;padding:12px;z-index:9;overflow:auto}
+#lb img{max-width:100%;max-height:100%;border-radius:6px;animation:pop .4s both}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:none}}
+@keyframes twinkle{from{opacity:.35}to{opacity:.85}}
+@keyframes float{50%{transform:translateY(10px)}}
+@keyframes wave{to{background-position-x:-1200px}}
+@keyframes sail{to{left:110%}}
+@keyframes bob{50%{margin-bottom:8px;rotate:4deg}}
+@keyframes shine{to{background-position:200% 0}}
+@keyframes swing{50%{transform:rotate(12deg)}}
+@keyframes glow{50%{box-shadow:0 0 0 4px var(--gold),0 0 30px 6px #f0c05a88}}
+@keyframes pulse{50%{transform:scale(1.04)}}
+@keyframes blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head>
+<body><div class="stars"></div><div class="moon"></div><div class="wave w1"></div><div class="wave w2"></div><div class="ship">⛵</div><main>
+<h1><span>⚓</span> Beyond The Horizon <span>⚓</span></h1>
+<div class="lbl center" style="margin-bottom:0;font-size:.95rem;color:var(--sea)">Treasure Hunt</div>
+<p class="sub">Two maps. Many secrets. Find the treasure before the tide turns.</p>
+
+<div class="maps">
+ <div class="card map" id="mapA"><h3>Map A — Room 1 · Island 1</h3><img src="assets/room1-map.jpg" alt="Room 1 map (The Voyage)"><div class="hint">Tap to enlarge</div></div>
+ <div class="card map" id="mapB"><h3>Map B — Room 2 · Island 2</h3><img src="assets/room2-map.jpg" alt="Room 2 map (Forbidden zone)"><div class="hint">Tap to enlarge</div></div>
+</div>
+
+<div id="timer">00:00.0</div>
+
+<div class="card center" id="startBox">
+ <div class="lbl">Ready, crew?</div>
+ <p>Press the button to reveal your first clue. The clock starts the moment you do.</p>
+ <button id="startBtn">▶ See Clue &amp; Start Timer</button>
+</div>
+
+<div class="card hide" id="game">
+ <div class="lbl" id="clueLbl"></div>
+ <div id="clue"></div>
+ <div class="note">📜 Find this place, ask the NPC the question, then type their answer below. If it’s right, you’ll unlock the next clue.</div>
+ <div class="row"><input id="kw" placeholder="Type the NPC’s answer here…" autocomplete="off"><button id="go">Submit</button></div>
+ <div id="msg"></div>
+</div>
+
+<div class="card hide" id="logCard" style="margin-top:14px">
+ <div class="lbl">Captain's log</div>
+ <div class="tbl"><table><thead><tr><th>✓</th><th>Keyword</th><th>Time found</th><th>Split</th></tr></thead><tbody id="log"></tbody></table></div>
+ <p class="center hide" id="done" style="font-size:1.2rem"></p>
+</div>
+</main>
+<div id="lb"><img alt=""></div>
+<script>
+// ===== EDIT YOUR HUNT HERE =====
+// Any of these 5 keywords works at ANY stage, but each can be used only once.
+const KEYWORDS=["Jolly Roger","Edward Teach","Parrot","Treasure Chest","Cutlass"];
+// One pool per stage. A random clue from the pool is shown. map: 'A' = Room 1, 'B' = Room 2.
+const STAGES=[
+ {map:'A',clues:[
+  "A heavy piece of equipment that helps a ship stay in place when pirates lower it into the water.",
+  "A pirate reaches a hidden cave and needs to keep his ship from drifting away. What does he lower into the sea?",
+  "Something made from metal, with metal geometric shapes, used to secure a ship in place and stop it from drifting away.",
+  "Sail to the island where trees give the place its name.",
+  "Seek the island named for its once-heavy growth of trees, known for its resources from the trees grown there.",
+  "Cody and Sophie take the dinghy over to which island in The Wanderer?"]},
+ {map:'A',clues:[
+  "All pirates need this for their expeditions. Without it, they cannot travel across the sea.",
+  "Pirates are called the terror of the sea, but without this they cannot travel on the sea.",
+  "Transport for pirates to travel and carry their loot from place to place.",
+  "Where the pirate doubloon is found — coin/gold?",
+  "A pirate digs beneath a palm tree marked with an “X” and discovers a locked wooden box filled with gold coins and jewels. What did he find?",
+  "Where the gold and silver, rubies, and other precious stones are kept."]},
+ {map:'A',clues:[
+  "Before sailing to a hidden island, a pirate studies a drawing showing the coastline, islands, and the route his ship should take. What is he studying?",
+  "Something without which the pirates cannot find their treasure chest’s location.",
+  "A pirate captain finds a mysterious piece of parchment showing islands, a dotted route, and an “X” marking hidden treasure. What is it?",
+  "A pirate sails towards a mysterious island on a ship whose bow is decorated with a fierce mythical creature with wings, scales, and fiery breath. What is this creature?",
+  "A mythical creature that is able to fly and breathe fire. What is it?",
+  "A huge lizard-like creature that has wings and breathes fire. It also loves gold."]},
+ {map:'B',clues:[
+  "Find the island whose name comes from the material used to shape pots and figures. When it is very wet, it is called slurry or slip.",
+  "An island where buildings are made out of mud or clay. An island wholly made of this material and named after it.",
+  "An island with buildings, animals, toys, etc., made using the coiling technique. They are made from a material closely related to mud or clay."]},
+ {map:'B',clues:[
+  "Also called second-hand shops, where you find old heritage and historically related objects.",
+  "Items that are at least 100 years old and valued for their age, beauty, rarity, etc., are found in this shop. Things from a former period are here.",
+  "A shop where old historic items are kept and sold."]}
+];
+// The 5th keyword entered finishes the hunt and stops the timer.
+// ===============================
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().replace(/[^a-z]/g,'');
+let stage=0,used=[],t0=0,last=0,iv=null;
+const fmt=ms=>{const s=ms/1000,m=Math.floor(s/60);return String(m).padStart(2,'0')+':'+(s%60).toFixed(1).padStart(4,'0')};
+function tick(){$('timer').textContent=fmt(Date.now()-t0)}
+let ty=null;
+function typeClue(txt){clearInterval(ty);const c=$('clue');c.textContent='';c.classList.add('typing');let n=0;
+ ty=setInterval(()=>{c.textContent=txt.slice(0,++n);if(n>=txt.length){clearInterval(ty);c.classList.remove('typing')}},16)}
+function shake(){$('kw').parentElement.animate([{transform:'translateX(0)'},{transform:'translateX(-10px)'},{transform:'translateX(10px)'},{transform:'translateX(-6px)'},{transform:'translateX(0)'}],{duration:350})}
+function confetti(){for(let n=0;n<70;n++){const e=document.createElement('div');e.className='coin';e.textContent=['🪙','💎','⭐','🏴‍☠️'][n%4];e.style.left=Math.random()*100+'vw';document.body.appendChild(e);
+ e.animate([{transform:'translateY(0) rotate(0)',opacity:1},{transform:'translateY(110vh) rotate('+(Math.random()*720-360)+'deg)',opacity:.9}],{duration:2200+Math.random()*2200,delay:Math.random()*800,easing:'ease-in'}).onfinish=()=>e.remove()}}
+function showClue(){const s=STAGES[stage];
+ typeClue(s.clues[Math.floor(Math.random()*s.clues.length)]);
+ $('clueLbl').textContent='Clue '+(stage+1)+' of '+STAGES.length;
+ $('mapA').classList.toggle('on',s.map==='A');$('mapB').classList.toggle('on',s.map==='B');$('kw').value='';$('kw').focus()}
+$('startBtn').onclick=()=>{
+ $('startBox').classList.add('hide');$('game').classList.remove('hide');$('logCard').classList.remove('hide');
+ stage=0;used=[];t0=last=Date.now();clearInterval(iv);$('timer').classList.remove('run');iv=setInterval(tick,100);$('timer').classList.add('run');showClue()};
+function submit(){
+ const v=norm($('kw').value);if(!v)return;
+ const k=KEYWORDS.find(w=>norm(w)===v);
+ if(!k){$('msg').textContent='Not a pirate word I know, matey — try again.';shake();return}
+ if(used.includes(k)){$('msg').textContent='“'+k+'” has already been used. Try a different keyword.';shake();return}
+ $('msg').textContent='';used.push(k);
+ const now=Date.now(),tr=document.createElement('tr');
+ tr.innerHTML='<td class="tick">✔</td><td></td><td>'+fmt(now-t0)+'</td><td>+'+fmt(now-last)+'</td>';
+ tr.children[1].textContent=k;$('log').appendChild(tr);last=now;stage++;
+ if(stage>=STAGES.length){clearInterval(iv);$('timer').classList.remove('run');$('timer').textContent=fmt(now-t0);$('game').classList.add('hide');
+  $('mapA').classList.remove('on');$('mapB').classList.remove('on');
+  $('done').classList.remove('hide');$('done').innerHTML='🏴‍☠️ <b>Treasure found!</b> Total time: '+fmt(now-t0);confetti()}
+ else showClue()}
+$('go').onclick=submit;
+$('kw').addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
+document.querySelectorAll('.map img').forEach(im=>im.onclick=()=>{$('lb').firstElementChild.src=im.src;$('lb').style.display='flex'});
+$('lb').onclick=()=>$('lb').style.display='none';
+window.addEventListener('pageshow',e=>{if(e.persisted)location.reload()});
+</script></body></html>
